@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+    <title>analytics</title>
+  </head>
+  <body class="bg-gray-900">
+    <div class="flex items-center justify-between p-4 bg-white">
+      <h1 class="text-3xl font-bold"><a href="/">Analytics</a></h1>
+
+      <div class="flex items-center space-x-2">
+        <form action="" id="form">
+          <select name="sheet" id="sheet">
+            {%for sheet in sheets %} {%if sheet.id == sheet_id.id %}
+            <option selected value="{{sheet.id}}">{{sheet.name}}</option>
+            {%else%}
+            <option value="{{sheet.id}}">{{sheet.name}}</option>
+            {%endif%} {%endfor%}
+          </select>
+        </form>
+        <button id="exportXlsx" class="px-5 py-2 bg-green-100 rounded">
+          Export to Excel
+        </button>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 my-4 gap-5 mx-4">
+      <div class="bg-gray-800 p-6 flex gap-3 rounded-lg">
+        <ion-icon
+          class="text-7xl text-yellow-400"
+          name="cube-outline"
+        ></ion-icon>
+        <div class="text-white font-bold">
+          <h1 class="text-2xl">Initial Weight</h1>
+          <p class="text-xl">{{subtotals.subtotal_initial_weight}} Kgs</p>
+        </div>
+      </div>
+      <div class="bg-gray-800 p-6 flex gap-3 rounded-lg">
+        <ion-icon
+          class="text-7xl text-green-400"
+          name="funnel-outline"
+        ></ion-icon>
+        <div class="text-white font-bold">
+          <h1 class="text-2xl">Sorted Weight</h1>
+          <p class="text-xl">{{subtotals.subtotal_sorted_weight}} Kgs</p>
+        </div>
+      </div>
+      <div class="bg-gray-800 p-6 flex gap-3 rounded-lg">
+        <ion-icon
+          class="text-7xl text-orange-400"
+          name="layers-outline"
+        ></ion-icon>
+        <div class="text-white font-bold">
+          <h1 class="text-2xl">Shrinkage Weight</h1>
+          <p class="text-xl">{{subtotals.subtotal_shrinkage}} Kgs</p>
+        </div>
+      </div>
+      <div class="bg-gray-800 p-6 flex gap-3 rounded-lg">
+        <ion-icon
+          class="text-7xl text-blue-400"
+          name="magnet-outline"
+        ></ion-icon>
+        <div class="text-white font-bold">
+          <h1 class="text-2xl">Shrinkage Percentage</h1>
+          <p class="text-xl">{{subtotals.total_shrinkage_percentage}}%</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-4">
+      <table id="avocadoDataTable" class="min-w-full bg-gray-800 my-4">
+        <thead>
+          <tr class="bg-gray-700 text-gray-100">
+            <th class="text-left p-2">Avocado Type</th>
+            <th class="text-left p-2">Count</th>
+            <th class="text-left p-2">Initial Weight</th>
+            <th class="text-left p-2">Sorted Weight</th>
+            <th class="text-left p-2">Shrinkage Weight</th>
+            <th class="text-left p-2">Shrinkage Percentage</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for data in fruit_data %}
+          <tr class="text-gray-100 border-t">
+            <td class="p-2">{{data.type_of_fruit}}</td>
+            <td class="p-2">{{data.total_count}}</td>
+            <td class="p-2">{{data.total_initial_weight}}</td>
+            <td class="p-2">{{data.total_sorted_weight}}</td>
+            <td class="p-2">{{data.total_shrinkage}}</td>
+            <td class="p-2">{{data.shrinkage_percentage}}</td>
+          </tr>
+          {%endfor%}
+        </tbody>
+        <tfoot>
+          <tr class="bg-gray-700 text-gray-100">
+            <td class="text-left p-2">Sub Totals:</td>
+            <td class="text-left p-2">{{subtotals.subtotal_count}}</td>
+            <td class="text-left p-2">{{subtotals.subtotal_initial_weight}}</td>
+            <td class="text-left p-2">{{subtotals.subtotal_sorted_weight}}</td>
+            <td class="text-left p-2">{{subtotals.subtotal_shrinkage}}</td>
+            <td class="text-left p-2">
+              {{subtotals.total_shrinkage_percentage}}
+            </td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <script>
+      const sheet = document.getElementById("sheet");
+      const form = document.getElementById("form");
+
+      sheet.addEventListener("change", (e) => {
+        form.submit();
+      });
+
+      document
+        .getElementById("exportXlsx")
+        .addEventListener("click", function () {
+          var table = document.getElementById("avocadoDataTable");
+          var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+          var filename = "{{sheet_id.name}}.xlsx";
+          XLSX.writeFile(wb, filename);
+        });
+    </script>
+  </body>
+</html>

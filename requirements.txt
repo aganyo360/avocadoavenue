@@ -1,0 +1,5 @@
+django
+xlrd
+openpyxl
+pandas
+python-dotenv
