@@ -6,7 +6,7 @@ class Sheet(models.Model):
         return self.name
     
 class AvocadoAvenue(models.Model):
-    grn= models.IntegerField(max_length=100, unique=True)
+    grn= models.IntegerField(unique=True)
     type_of_fruit = models.CharField(max_length=256)
     initial_weight = models.IntegerField()
     fruid_cost = models.FloatField()

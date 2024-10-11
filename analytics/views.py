@@ -13,13 +13,17 @@ def index(request):
         xlsx = request.FILES.get('xlsx')
         sheet_name = request.POST.get('sheet_name')
         try:
-            df1 = pd.read_excel(xlsx)
-            df = df1.dropna()
+            df = pd.read_excel(xlsx)
+            # print(df)
+            # df = df.dropna()
             sheet, created = Sheet.objects.get_or_create(name=sheet_name)
+            print("Sheet done", df )
             for index, row in df.iterrows():
-                # Hello
-                grn, type_of_fruit, initial_weight, fruit_cost, sorted_weight = row.values
-                AvocadoAvenue.objects.create(grn=grn, type_of_fruit=type_of_fruit, initial_weight=initial_weight, fruid_cost=fruit_cost, sorted_weight=sorted_weight, sheet=sheet)     
+                fruit_cost=1
+                # grn, type_of_fruit, initial_weight, fruit_cost, sorted_weight = row.values
+                date, grn, Variety, Intake, _1stSort,	_2ndSort, _3rdSort,	_4thSort, t_sort, Shrinkage, percentage = row.values
+                # Date	GRN	Variety	Intake	1st Sort	2nd Sort	3rd Sort	4th Sort	Total Sorted Weight	Shrinkage	Shrinkage %
+                AvocadoAvenue.objects.create(grn=grn, type_of_fruit=Variety, initial_weight=Intake, fruid_cost=fruit_cost, sorted_weight=Shrinkage, sheet=sheet)     
             return redirect('analytics')
         
         except Exception as e:
